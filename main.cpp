@@ -1,3 +1,4 @@
+#include <utility>
 #include <iostream>
 
 #include "Book.h"
@@ -20,6 +21,23 @@ int main() {
     book1.displayInfo();
     reader1.displayProfile();
     card1.displayInfo();
+
+    Book book3 = book1;
+
+    Book book4 = std::move(book2);
+
+    const Book book5("Const Book", "Author", "999");
+    book5.displayInfo();
+
+    cout << book1 << endl;
+
+    cout << "Total books: " << Book::getBookCount() << endl;
+
+    if(!book1)
+        cout << "Book is not available" << endl;
+
+    if(book1 == book3)
+        cout << "Books have same ISBN" << endl;
 
     return 0;
 }
