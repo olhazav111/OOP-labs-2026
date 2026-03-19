@@ -4,6 +4,9 @@
 #include "Book.h"
 #include "Reader.h"
 #include "LibraryCard.h"
+#include "PrintedBook.h"
+#include "EBook.h"
+#include "StudentReader.h"
 
 using namespace std;
 
@@ -15,8 +18,8 @@ int main() {
     Reader reader1("Olha Zavialets", 1, 18);
     Reader reader2("Maria Koval", 2, 19);
 
-    LibraryCard card1(1, "08.03.2026");
-    LibraryCard card2(2, "10.03.2026");
+    LibraryCard card1(1, "08.03.2026", reader1);
+    LibraryCard card2(2, "10.03.2026", reader2);
 
     book1.displayInfo();
     reader1.displayProfile();
@@ -38,6 +41,17 @@ int main() {
 
     if(book1 == book3)
         cout << "Books have same ISBN" << endl;
+
+    cout << "\n----- Inheritance demo -----\n";
+
+    PrintedBook printed("Clean Code","Robert Martin","333",450);
+    EBook ebook("Design Patterns","Gamma","444",6.2);
+
+    StudentReader student("Olha Zavialets",3,18,"LNU");
+
+    printed.displayInfo();
+    ebook.displayInfo();
+    student.displayProfile();
 
     return 0;
 }
