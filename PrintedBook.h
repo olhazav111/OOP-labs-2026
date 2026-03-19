@@ -1,13 +1,16 @@
-//
-// Created by natal on 19.03.2026.
-//
+#ifndef PRINTEDBOOK_H
+#define PRINTEDBOOK_H
 
-#ifndef UNTITLED8_PRINTEDBOOK_H
-#define UNTITLED8_PRINTEDBOOK_H
+#include "Book.h"
 
+class PrintedBook : public Book {
+private:
+    int pages;
 
-class PrintedBook {
+public:
+    PrintedBook(std::string t, std::string a, std::string i, int p);
+
+    void displayInfo();
 };
 
-
-#endif //UNTITLED8_PRINTEDBOOK_H
+#endif

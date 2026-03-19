@@ -1,13 +1,16 @@
-//
-// Created by natal on 19.03.2026.
-//
+#ifndef EBOOK_H
+#define EBOOK_H
 
-#ifndef UNTITLED8_EBOOK_H
-#define UNTITLED8_EBOOK_H
+#include "Book.h"
 
+class EBook : public Book {
+private:
+    double fileSize;
 
-class EBook {
+public:
+    EBook(std::string t, std::string a, std::string i, double s);
+
+    void displayInfo();
 };
 
-
-#endif //UNTITLED8_EBOOK_H
+#endif
