@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "Reader.h"
 
 class LibraryCard {
 private:
@@ -10,8 +11,10 @@ private:
     std::string date;
     bool active;
 
+    Reader owner;
+
 public:
-    LibraryCard(int num = 0, std::string d = "01.01.2024");
+    LibraryCard(int num = 0, std::string d = "01.01.2024", Reader r = Reader());
 
     ~LibraryCard();
 
