@@ -1,13 +1,16 @@
-//
-// Created by natal on 19.03.2026.
-//
+#ifndef STUDENTREADER_H
+#define STUDENTREADER_H
 
-#ifndef UNTITLED8_STUDENTREADER_H
-#define UNTITLED8_STUDENTREADER_H
+#include "Reader.h"
 
+class StudentReader : public Reader {
+private:
+    std::string university;
 
-class StudentReader {
+public:
+    StudentReader(std::string n, int i, int a, std::string u);
+
+    void displayProfile();
 };
 
-
-#endif //UNTITLED8_STUDENTREADER_H
+#endif
