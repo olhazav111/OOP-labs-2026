@@ -1,8 +1,8 @@
 #ifndef BOOK_H
 #define BOOK_H
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
 class Book {
 private:
@@ -20,15 +20,18 @@ public:
     Book(const Book& other);
     Book(Book&& other);
 
-    ~Book();
+    virtual ~Book();
 
-    void borrowBook();
-    void returnBook();
-    void displayInfo() const;
+    virtual void borrowBook();
+    virtual void returnBook();
+    virtual void displayInfo() const;
+
+    virtual void printType() const;
 
     static int getBookCount();
 
-    bool operator!();
+    bool operator!() const;
+
     bool operator==(const Book& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const Book& book);

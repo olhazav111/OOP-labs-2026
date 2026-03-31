@@ -22,12 +22,11 @@ Book::Book(const Book& other)
 }
 
 Book::Book(Book&& other)
+        : title(std::move(other.title)),
+          author(std::move(other.author)),
+          isbn(std::move(other.isbn)),
+          available(other.available)
 {
-    title = std::move(other.title);
-    author = std::move(other.author);
-    isbn = std::move(other.isbn);
-    available = other.available;
-
     other.title = "Moved";
     other.author = "";
     other.isbn = "";
@@ -37,6 +36,7 @@ Book::Book(Book&& other)
 
 Book::~Book()
 {
+    bookCount--;
     std::cout << "Book deleted: " << title << std::endl;
 }
 
@@ -63,7 +63,7 @@ int Book::getBookCount()
     return bookCount;
 }
 
-bool Book::operator!()
+bool Book::operator!() const
 {
     return !available;
 }
@@ -84,3 +84,8 @@ std::istream& operator>>(std::istream& is, Book& book)
     is >> book.title >> book.author >> book.isbn;
     return is;
 }
+
+void Book::printType() const
+    {
+        std::cout << "Generic Book" << std::endl;
+    }
