@@ -1,14 +1,21 @@
-#include <utility>
 #include <iostream>
+#include <utility>
 
 #include "Book.h"
-#include "Reader.h"
+#include "EBook.h"
 #include "LibraryCard.h"
 #include "PrintedBook.h"
-#include "EBook.h"
+#include "Reader.h"
 #include "StudentReader.h"
 
+
 using namespace std;
+
+void showBook(Book& book)
+{
+    book.displayInfo();
+}
+
 
 int main() {
 
@@ -34,6 +41,18 @@ int main() {
 
     cout << book1 << endl;
 
+    cout << "\n----- Run-time Polymorphism demo -----\n";
+
+    Book* book;
+
+    PrintedBook pb("Clean Code", "Robert Martin", "123", 450);
+
+    book = &pb;
+
+    book->displayInfo();
+
+    pb.printType();
+
     cout << "Total books: " << Book::getBookCount() << endl;
 
     if(!book1)
@@ -52,6 +71,18 @@ int main() {
     printed.displayInfo();
     ebook.displayInfo();
     student.displayProfile();
+
+    cout << "\n----- Static Binding demo -----\n";
+
+    Book simpleBook("Simple Book", "Author", "555");
+    PrintedBook printed2("C++ Guide","Bjarne","666",500);
+
+    Book& ref = printed2;
+    ref.displayInfo();
+
+
+    simpleBook.displayInfo();
+    printed2.displayInfo();
 
     return 0;
 }
