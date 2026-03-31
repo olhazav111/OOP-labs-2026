@@ -15,9 +15,9 @@ public:
     Reader(std::string n = "Unknown", int i = 0, int a = 0);
     Reader(std::string n);
 
-    ~Reader();
+    virtual ~Reader();
 
-    void displayProfile();
+    virtual void displayProfile();
 };
 
 #endif
