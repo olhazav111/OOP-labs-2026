@@ -7,7 +7,7 @@ class EBook final : public Book {
 private:
     double fileSize;
 
-public:
+public: void printType() const override;
     EBook(std::string t, std::string a, std::string i, double s);
 
     void displayInfo() const override;

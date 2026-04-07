@@ -3,8 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include "IPrintable.h"
 
-class Book {
+class Book : public IPrintable {
 private:
     std::string title;
     std::string author;
@@ -22,11 +23,13 @@ public:
 
     virtual ~Book();
 
-    virtual void borrowBook();
-    virtual void returnBook();
+    void borrowBook();
+    void returnBook();
     virtual void displayInfo() const;
 
-    virtual void printType() const;
+    virtual void printType() const = 0;
+
+    void printDetails() const override;
 
     static int getBookCount();
 

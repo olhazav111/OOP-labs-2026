@@ -13,3 +13,7 @@ void EBook::displayInfo() const
     Book::displayInfo();
     std::cout << "File size: " << fileSize << " MB\n";
 }
+
+void EBook::printType() const {
+    std::cout << "Electronic Book (EBook)" << std::endl;
+}

@@ -17,7 +17,6 @@ Book::Book(const Book& other)
     author = other.author;
     isbn = other.isbn;
     available = other.available;
-
     std::cout << "Book copied: " << title << std::endl;
 }
 
@@ -30,7 +29,6 @@ Book::Book(Book&& other)
     other.title = "Moved";
     other.author = "";
     other.isbn = "";
-
     std::cout << "Book moved: " << title << std::endl;
 }
 
@@ -38,6 +36,19 @@ Book::~Book()
 {
     bookCount--;
     std::cout << "Book deleted: " << title << std::endl;
+}
+
+void Book::displayInfo() const
+{
+    std::cout << "Book: " << title
+              << " | Author: " << author
+              << " | Available: " << (available ? "Yes" : "No")
+              << std::endl;
+}
+
+void Book::printDetails() const {
+    std::cout << "[IPrintable Interface] ";
+    displayInfo();
 }
 
 void Book::borrowBook()
@@ -48,14 +59,6 @@ void Book::borrowBook()
 void Book::returnBook()
 {
     this->available = true;
-}
-
-void Book::displayInfo() const
-{
-    std::cout << "Book: " << title
-              << " | Author: " << author
-              << " | Available: " << (available ? "Yes" : "No")
-              << std::endl;
 }
 
 int Book::getBookCount()
@@ -84,8 +87,3 @@ std::istream& operator>>(std::istream& is, Book& book)
     is >> book.title >> book.author >> book.isbn;
     return is;
 }
-
-void Book::printType() const
-    {
-        std::cout << "Generic Book" << std::endl;
-    }
