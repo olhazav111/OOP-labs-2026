@@ -17,4 +17,6 @@ add_executable(untitled8
         EBook.h
         StudentReader.cpp
         StudentReader.h
+        IPrintable.cpp
+        IPrintable.h
 )
