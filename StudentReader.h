@@ -10,7 +10,7 @@ private:
 public:
     StudentReader(std::string n, int i, int a, std::string u);
 
-    void displayProfile() override;
+    void displayProfile () const override;
 };
 
 #endif

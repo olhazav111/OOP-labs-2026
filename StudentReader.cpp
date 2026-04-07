@@ -6,7 +6,8 @@ StudentReader::StudentReader(std::string n, int i, int a, std::string u)
     std::cout << "StudentReader created\n";
 }
 
-void StudentReader::displayProfile()
+void StudentReader::displayProfile() const
+
 {
     Reader::displayProfile();
     std::cout << "University: " << university << std::endl;

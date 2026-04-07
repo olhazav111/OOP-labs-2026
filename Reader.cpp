@@ -13,10 +13,14 @@ Reader::~Reader()
     std::cout << "Reader deleted: " << name << std::endl;
 }
 
-void Reader::displayProfile()
+void Reader::displayProfile() const
 {
     std::cout << "Name: " << name
               << " | ID: " << id
               << " | Age: " << age
               << std::endl;
+}
+
+void Reader::printDetails() const {
+    displayProfile();
 }
