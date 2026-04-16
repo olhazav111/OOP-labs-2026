@@ -12,6 +12,8 @@ public:
 
     void displayInfo() const override;
     void printType() const override;
+
+    std::string getExtraValue() const override { return std::to_string(pages);}
 };
 
 #endif

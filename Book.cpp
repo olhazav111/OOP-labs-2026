@@ -9,7 +9,6 @@ Book::Book(std::string t, std::string a, std::string i)
     std::cout << "Book created: " << title << std::endl;
 }
 
-Book::Book(std::string t) : Book(t, "Unknown", "000") {}
 
 Book::Book(const Book& other)
 {

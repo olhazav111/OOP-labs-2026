@@ -16,12 +16,18 @@ private:
 
 public:
     Book(std::string t = "Unknown", std::string a = "Unknown", std::string i = "000");
-    Book(std::string t);
 
     Book(const Book& other);
     Book(Book&& other);
 
     virtual ~Book();
+
+
+    std::string getTitle() const { return title; }
+    std::string getAuthor() const { return author; }
+    std::string getIsbn() const { return isbn; }
+
+    virtual std::string getExtraValue() const = 0;
 
     void borrowBook();
     void returnBook();
