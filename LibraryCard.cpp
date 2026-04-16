@@ -1,6 +1,6 @@
 #include "LibraryCard.h"
 
-LibraryCard::LibraryCard(int num, std::string d, Reader r)
+LibraryCard::LibraryCard(int num, std::string d, std::shared_ptr<Reader> r)
         : cardNumber(num), date(d), active(true), owner(r)
 {
     std::cout << "Card created: " << cardNumber << std::endl;
@@ -18,5 +18,5 @@ void LibraryCard::displayInfo()
               << (active ? "Yes" : "No")
               << std::endl;
 
-    owner.displayProfile();
+    if (owner) owner->displayProfile();
 }

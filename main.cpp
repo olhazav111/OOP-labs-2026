@@ -1,97 +1,200 @@
 #include <iostream>
-#include <utility>
+#include <vector>
+#include <memory>
+#include <string>
+#include <fstream>
+#include <stdexcept>
+#include <limits>
+#include <sstream>
 
-#include "Book.h"
-#include "EBook.h"
-#include "LibraryCard.h"
 #include "PrintedBook.h"
-#include "Reader.h"
-#include "StudentReader.h"
-#include "IPrintable.h"
+#include "EBook.h"
 
 using namespace std;
 
-void showBook(Book& book)
-{
-    book.displayInfo();
+vector<shared_ptr<Book>> library;
+
+void logHistory(const string& message) {
+    ofstream historyFile("history.txt", ios::app);
+    if (historyFile.is_open()) {
+        historyFile << "[LOG]: " << message << endl;
+        historyFile.close();
+    }
+}
+
+void saveToFile() {
+    ofstream outFile("library.txt");
+    if (!outFile) throw runtime_error("Could not open file for writing!");
+
+    for (const auto& b : library) {
+        if (dynamic_pointer_cast<PrintedBook>(b)) outFile << "P|";
+        else outFile << "E|";
+        outFile<< b->getTitle() << "|" << b->getAuthor() << "|"
+                << b->getIsbn() << "|" << b->getExtraValue() << endl;
+    }
+    outFile.close();
+}
+
+void loadFromFile() {
+    ifstream inFile("library.txt");
+    if (!inFile) return;
+
+    string line;
+    while (getline(inFile, line)) {
+        if (line.empty()) continue;
+        stringstream ss(line);
+        string type, t, a, i, extra;
+
+        getline(ss, type, '|');
+        getline(ss, t, '|');
+        getline(ss, a, '|');
+        getline(ss, i, '|');
+        getline(ss, extra, '|');
+
+        if (type == "P")
+            library.push_back(make_shared<PrintedBook>(t, a, i, stoi(extra)));
+        else if (type == "E")
+            library.push_back(make_shared<EBook>(t, a, i, stod(extra)));
+    }
+    inFile.close();
+    cout << "--- Data successfully restored from file ---" << endl;
+}
+
+void adminMenu() {
+    string pass;
+    cout << "Enter admin password: ";
+    cin >> pass;
+
+    if (pass != "admin") {
+        logHistory("Failed admin login attempt.");
+        throw invalid_argument("Invalid password!");
+    }
+
+    logHistory("Admin logged in.");
+
+    int adminChoice;
+    while (true) {
+        cout << "\n--- Admin Menu ---\n1. Add Printed Book\n2. Add E-Book\n3. Back\nChoice: ";
+        if (!(cin >> adminChoice)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (adminChoice == 3) break;
+
+        string t, a, i;
+        cout << "Title: "; cin.ignore(); getline(cin, t);
+        cout << "Author: "; getline(cin, a);
+        cout << "ISBN: "; getline(cin, i);
+
+        if (adminChoice == 1) {
+            int pages;
+            cout << "Pages: "; cin >> pages;
+            library.push_back(make_shared<PrintedBook>(t, a, i, pages));
+        } else if (adminChoice == 2) {
+            double size;
+            cout << "File size (MB): "; cin >> size;
+            library.push_back(make_shared<EBook>(t, a, i, size));
+        }
+
+        saveToFile();
+        logHistory("Added new book: " + t);
+        cout << "Book successfully added and saved!\n";
+    }
+}
+
+void userMenu() {
+    logHistory("User viewed the library.");
+
+    int choice;
+    while (true) {
+        cout << "\n--- User Menu ---\n"
+             << "1. View all books\n"
+             << "2. Borrow a book\n"
+             << "3. Return a book\n"
+             << "4. Back\nChoice: ";
+
+        if (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (choice == 4) break;
+
+        if (choice == 1) {
+            cout << "\n--- Available Books ---" << endl;
+            if (library.empty()) {
+                cout << "Library is empty." << endl;
+            } else {
+                for (size_t i = 0; i < library.size(); ++i) {
+                    cout << i + 1 << ". ";
+                    library[i]->displayInfo();
+                }
+            }
+        } else if (choice == 2 || choice == 3) {
+            if (library.empty()) { cout << "Library is empty.\n"; continue; }
+
+            cout << "\n--- Books ---\n";
+            for (size_t i = 0; i < library.size(); ++i) {
+                cout << i + 1 << ". ";
+                library[i]->displayInfo();
+            }
+
+            cout << "Enter book number: ";
+            int idx;
+            if (!(cin >> idx) || idx < 1 || idx > (int)library.size()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid number.\n";
+                continue;
+            }
+
+            auto& book = library[idx - 1];
+            if (choice == 2) {
+                book->borrowBook();
+                logHistory("User borrowed book: " + book->getTitle());
+                cout << "Book \"" << book->getTitle() << "\" borrowed.\n";
+            } else {
+                book->returnBook();
+                logHistory("User returned book: " + book->getTitle());
+                cout << "Book \"" << book->getTitle() << "\" returned.\n";
+            }
+            saveToFile();
+        }
+    }
 }
 
 int main() {
+    try {
+        loadFromFile();
 
-    PrintedBook book1("Programming in C++", "Ivan Petrenko", "111-222", 300);
-    PrintedBook book2("Basics of Algorithms", "Unknown", "000", 150);
+        int mainChoice;
+        while (true) {
+            cout << "\n=== Main Menu ===\n1. Admin\n2. User\n3. Exit\nChoice: ";
+            if (!(cin >> mainChoice)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Input error. Please try again." << endl;
+                continue;
+            }
 
-    Reader reader1("Olha Zavialets", 1, 18);
-    Reader reader2("Maria Koval", 2, 19);
-
-    LibraryCard card1(1, "08.03.2026", reader1);
-    LibraryCard card2(2, "10.03.2026", reader2);
-
-    book1.displayInfo();
-    reader1.displayProfile();
-    card1.displayInfo();
-
-    PrintedBook book3 = book1;
-
-    PrintedBook book4 = std::move(book2);
-
-    const PrintedBook book5("Const Book", "Author", "999", 100);
-    book5.displayInfo();
-
-    cout << book1 << endl;
-
-    cout << "\n----- Run-time Polymorphism demo -----\n";
-
-    Book* bookPtr;
-
-    PrintedBook pb("Clean Code", "Robert Martin", "123", 450);
-
-    bookPtr = &pb;
-    bookPtr->displayInfo();
-    bookPtr->printType();
-
-    cout << "Total books: " << Book::getBookCount() << endl;
-
-    if(!book1)
-        cout << "Book is not available" << endl;
-
-    if(book1 == book3)
-        cout << "Books have same ISBN" << endl;
-
-    cout << "\n----- Inheritance demo -----\n";
-
-    PrintedBook printed("Clean Code","Robert Martin","333",450);
-    EBook ebook("Design Patterns","Gamma","444",6.2);
-
-    StudentReader student("Olha Zavialets",3,18,"LNU");
-
-    printed.displayInfo();
-    ebook.displayInfo();
-    student.displayProfile();
-
-    cout << "\n----- Static Binding demo -----\n";
-
-    PrintedBook simpleBook("Simple Book", "Author", "555", 120);
-    PrintedBook printed2("C++ Guide","Bjarne","666",500);
-
-    Book& ref = printed2;
-    ref.displayInfo();
-
-    simpleBook.displayInfo();
-    printed2.displayInfo();
-
-    cout << "\n----- Task 8: Interface & Pure Virtual Functions -----\n";
-
-    IPrintable* elements[2];
-    elements[0] = new PrintedBook("C++ Primer", "Lippman", "555", 1000);
-    elements[1] = new StudentReader("Oleh", 123, 20, "LPNU");
-
-    for(int i = 0; i < 2; i++) {
-        elements[i]->printDetails();
-    }
-
-    for(int i = 0; i < 2; i++) {
-        delete elements[i];
+            try {
+                if (mainChoice == 1) adminMenu();
+                else if (mainChoice == 2) userMenu();
+                else if (mainChoice == 3) {
+                    logHistory("Program terminated by user.");
+                    break;
+                }
+                else cout << "Invalid menu option!" << endl;
+            } catch (const exception& e) {
+                cerr << "Error: " << e.what() << endl;
+                logHistory("Error during execution: " + string(e.what()));
+            }
+        }
+    } catch (const exception& e) {
+        cerr << "Critical system error: " << e.what() << endl;
     }
 
     return 0;
